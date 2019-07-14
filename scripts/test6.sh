@@ -1,5 +1,5 @@
 #!/bin/bash
-# iterate throuth all the files in a directory
+# iterate through all the files in a directory
 #
 for file in /home/zjk/*
 do
