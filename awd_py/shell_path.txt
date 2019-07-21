@@ -1,0 +1,6 @@
+http://10.188.14.17:80/index.php,get,hb
+http://10.188.14.15:80/index.php,get,hb
+http://10.188.14.19:80/index.php,get,hb
+http://10.188.14.20:80/index.php,get,hb
+http://10.188.14.239:80/index.php,get,hb
+http://10.188.14.240:80/index.php,get,hb
