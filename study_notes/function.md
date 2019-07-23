@@ -196,6 +196,30 @@ int fprintf( FILE *stream, const char *format, [ argument ]...)
 
 ---
 
+### fread
+
+#### 函数原型
+
+~~~c
+size_t fread ( void *buffer, size_t size, size_t count, FILE *stream) ;
+~~~
+
+#### 参数
+
+buffer：用于接收数据的内存地址
+
+size： 要读的每个数据项的字节数，单位是字节
+
+count：要读count个数据项，每个数据项size个字节
+
+stream： 输入流
+
+#### 返回值
+
+返回真实读取的项数，若大于count则意味着产生了错误。
+
+---
+
 ### fgets
 
 从指定的流 stream 读取一行，并把它存储在 **buf** 所指向的字符数组内
@@ -462,7 +486,37 @@ SIGSEGV：试着向只读区写入
 SIGBUS：试着访问不属于进程的内存区
 ~~~
 
+---
 
+### strtol()
 
+C 库函数 **long int strtol(const char \*str, char \**endptr, int base)** 把参数 **str** 所指向的字符串根据给定的 **base** 转换为一个长整数（类型为 long int 型），base 必须介于 2 和 36（包含）之间，或者是特殊值 0。
 
+#### 原型
+
+~~~c
+long int strtol(const char *str, char **endptr, int base)
+~~~
+
+#### 参数
+
+- **str** -- 要转换为长整数的字符串。
+- **endptr** -- 对类型为 char* 的对象的引用，其值由函数设置为 **str** 中数值后的下一个字符。
+- **base** -- 基数，必须介于 2 和 36（包含）之间，或者是特殊值 0。
+
+#### 返回值
+
+该函数返回转换后的长整数，如果没有执行有效的转换，则返回一个零值。
+
+---
+
+### isalnum
+
+判断字符变量c是否为字母或数字，若是则返回非零，否则返回零。
+
+#### 原型
+
+~~~c
+extern int isalnum(int c);
+~~~
 
