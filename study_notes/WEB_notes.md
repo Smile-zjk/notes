@@ -690,6 +690,20 @@ HTTP 文件上传变量,通过 HTTP POST 方式上传到当前脚本的项目的
 `regs`，则匹配项将被存入`regs` 数组中。$regs[1]包含第一个左圆括号开始的子串，$regs[2]
 包含第二个子串，以此类推。$regs[0] 包含整个匹配的字符串。
 
+---
+
+### preg_replace
+
+执行一个正则表达式的搜索和替换
+
+~~~php
+preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, int $limit = -1 [, int &$count ]] ) : mixed
+~~~
+
+搜索**subject**中匹配**pattern**的部分， 以**replacement**进行替换。
+
+---
+
 
 
 ## 猫抓老鼠
