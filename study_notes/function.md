@@ -92,6 +92,53 @@ int sprintf( char *buffer, const char *format, [ argument] … );
 
 ---
 
+### sscanf（）
+
+ C 库函数 **int sscanf(const char \*str, const char \*format, ...)** 从字符串读取格式化输入。 
+
+#### 原型
+
+~~~c
+int sscanf(const char *str, const char *format, ...)
+~~~
+
+#### 参数
+
+* **str**  -- 这是C字符串，是函数检索数据的源。
+* **format** 
+
+#### 返回值
+
+如果成功，该函数返回成功匹配和赋值的个数。如果到达文件末尾或发生错误，则返回EOF。
+
+#### 实例
+
+下面的实例演示了`sscanf（）`函数的用法
+
+~~~c
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+
+int main()
+{
+   int day, year;
+   char weekday[20], month[20], dtm[100];
+
+   strcpy( dtm, "Saturday March 25 1989" );
+   sscanf( dtm, "%s %s %d  %d", weekday, month, &day, &year );
+
+   printf("%s %d, %d = %s\n", month, day, year, weekday );
+    
+   return(0);
+}
+// 运行结果为:March 25, 1989 = Saturday
+~~~
+
+
+
+---
+
 ### strcat
 
 将两个char类型连接。
@@ -105,6 +152,30 @@ extern char *strcat(char *dest, const char *src);
 #### 功能
 
 把`src`所指向的字符串（包括`“\0”`）复制到`dest`所指向的字符串后面（删除`dest`原来末尾的`“\0”`）。要保证`dest`足够长，以容纳被复制进来的`src`（`dest`和`src`所指区域不可以重叠）。`src`中原有的字符不变。返回指向`dest`的[指针](https://baike.baidu.com/item/指针)。
+
+---
+
+### strncpy
+
+ 把 `src` 所指向的字符串复制到 **dest**，最多复制 `n` 个字符。当 src 的长度小于 n 时，dest 的剩余部分将用空字节填充。 
+
+#### 原型
+
+~~~c
+char *strncpy(char *dest, const char *src, size_t n);
+~~~
+
+#### 参数
+
+- **dest** -- 指向用于存储复制内容的目标数组。
+- **src** -- 要复制的字符串。
+- **n** -- 要从源中复制的字符数。
+
+#### 返回值
+
+该函数返回最终复制的字符串。
+
+
 
 ---
 
@@ -354,6 +425,44 @@ int GetDlgItemText( int nID, CString& rString) const;
 
 ---
 
+### malloc
+
+头文件：#include<stdlib.h>
+
+malloc（）函数用来动态地分配内存空间
+
+#### 原型
+
+~~~c
+void* malloc(size_t size);
+~~~
+
+#### 参数说明
+
+`size`为需要分配的内存空间的大小，以字节（Byte）计。
+
+#### 函数说明
+
+`malloc（）`在堆区分配一块指定大小的内存空间，用来存放数据。这块内存空间在函数执行后**不会被初始化**，它们的**值是未知的**。如果希望在分配内存的同时进行初始化，请使用`calloc()`函数
+
+#### 返回值
+
+分配成功返回指向该内存的地址，失败则返回NULL。
+
+由于申请内存空间时可能有也可能没有，所以需要自行判断是否申请成功，再进行后续操作。
+
+ 如果 size 的值为 0，那么返回值会因标准库实现的不同而不同，可能是 NULL，也可能不是，但返回的指针不应该再次被引用。 
+
+ **注意：函数的返回值类型是 void *，void 并不是说没有返回值或者返回空指针，而是返回的指针类型未知。**所以在使用 `malloc()` 时通常需要进行强制类型转换，将 `void` 指针转换成我们希望的类型，例如： 
+
+~~~c
+char *ptr = (char *)malloc(10);   // 分配10个字节的内存空间，用来存放字符
+~~~
+
+
+
+---
+
 ### calloc
 
 `calloc`是一个ISO C函数
@@ -371,6 +480,47 @@ void *calloc(size_t n, size_t size)；
 #### 与malloc的区别
 
 `calloc`在动态分配完内存后，**自动初始化该内存空间为零**，而`malloc`不初始化，里边数据是随机的垃圾数据。
+
+---
+
+### free()
+
+头文件：#include<stdlib.h>
+
+free()函数用来释放动态分配的内存空间
+
+#### 原型
+
+~~~c
+void free(void* ptr);
+~~~
+
+#### 参数说明
+
+`ptr`为将要释放的内存空间的地址
+
+free() 可以释放由 `malloc()`、`calloc()`、`realloc()` 分配的内存空间，以便其他程序再次使用。
+
+`free()`只能释放动态分配的内存空间，并不能释放任意的内存。下面的写法是错误的
+
+~~~c
+int a[10];
+// ...
+free(a);
+~~~
+
+ 如果 `ptr` 所指向的内存空间**不是由上面的三个函数所分配**的，或者**已被释放**，那么调用 `free()` **会有无法预知的情况发生**。 
+
+ 如果 `ptr` 为 **NULL**，那么 `free()` 不会有任何作用 
+
+ **注意**：`free()` **不会改变** `ptr` **变量本身的值**，调用 `free()` 后它**仍然会指向相同的内存空间**，但是此时该内存已无效，不能被使用。所以建议将 `ptr` 的值设置为 **NULL**，例如： 
+
+~~~c
+free(ptr);
+ptr = NULL;
+~~~
+
+
 
 ---
 
