@@ -1,4 +1,4 @@
-
+# -*- coding: utf-8 -*-
 ip_list = []
 for i in range(17,20):
     # ip池，自行调整

