@@ -155,6 +155,22 @@ extern char *strcat(char *dest, const char *src);
 
 ---
 
+### strcpy
+
+#### 原型
+
+~~~c
+char *strcpy(char *dest, const char *src)
+~~~
+
+#### 功能
+
+C 库函数，把 **src** 所指向的字符串复制到 **dest**。
+
+需要注意的是如果目标数组 dest 不够大，而源字符串的长度又太长，**可能会造成缓冲溢出**的情况。
+
+---
+
 ### strncpy
 
  把 `src` 所指向的字符串复制到 **dest**，最多复制 `n` 个字符。当 src 的长度小于 n 时，dest 的剩余部分将用空字节填充。 
@@ -670,3 +686,18 @@ long int strtol(const char *str, char **endptr, int base)
 extern int isalnum(int c);
 ~~~
 
+---
+
+### srand()
+
+ `rand函数`在产生随机数前，需要系统提供的生成伪随机数序列的种子，rand根据这个种子的值产生一系列随机数。如果系统提供的种子没有变化，每次调用rand函数生成的伪随机数序列都是一样的。`srand(unsigned seed)`通过参数`seed`改变系统提供的种子值，从而可以使得每次调用rand函数生成的伪随机数序列不同，从而实现真正意义上的“随机”。通常可以利用系统时间来改变系统的种子值，即srand(time(NULL))，可以为rand函数提供不同的种子值，进而产生不同的随机数序列。 
+
+#### 原型
+
+~~~c
+void srand(unsigned int seed)
+~~~
+
+#### 参数
+
+ **seed** -- 这是一个整型值，用于伪随机数生成算法播种 
