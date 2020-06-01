@@ -701,3 +701,33 @@ void srand(unsigned int seed)
 #### 参数
 
  **seed** -- 这是一个整型值，用于伪随机数生成算法播种 
+
+---
+
+### GetDlgItemTextA（）
+
+调用这个函数以**获得**与`对话框中的控件相关的标题`或`文本`
+
+#### 原型
+
+```c++
+UINT GetDlgItemTextA(
+  HWND  hDlg,
+  int   nIDDlgItem,
+  LPSTR lpString,
+  int   cchMax
+);
+```
+
+#### 参数
+
+- **hDlg** -- 包含控件的对话框的句柄。
+- **nIDDlgItem** -- 要检索其标题或文本的控件的标识符。
+- **lpString** -- 用于接收标题或文本的缓冲区。
+- **cchMax** -- 要复制到`lpString`指向的缓冲区的字符串的**最大长度**(以字符为单位)。如果字符串的长度(包括null字符)**超过了限制**，则该字符串将**被截断**。
+
+#### 返回值
+
+如果函数**成功**，返回值指定**复制到缓冲区的字符数**，不包括终止null字符。
+
+如果函数**失败**，返回值为**零**。要获取扩展的错误信息，请调用GetLastError。
