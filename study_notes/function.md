@@ -731,3 +731,34 @@ UINT GetDlgItemTextA(
 如果函数**成功**，返回值指定**复制到缓冲区的字符数**，不包括终止null字符。
 
 如果函数**失败**，返回值为**零**。要获取扩展的错误信息，请调用GetLastError。
+
+---
+
+### DialogBoxParamA（）
+
+从对话框模板资源创建模态对话框。在显示对话框之前，函数将应用程序定义的值作为WM_INITDIALOG消息的lParam参数传递给对话框过程。应用程序可以使用此值初始化对话框控件。
+
+#### 原型
+
+~~~c++
+INT_PTR DialogBoxParamA(
+  HINSTANCE hInstance,
+  LPCSTR    lpTemplateName,
+  HWND      hWndParent,
+  DLGPROC   lpDialogFunc,
+  LPARAM    dwInitParam
+);
+~~~
+
+#### 参数
+
+- **hInstance** -- 包含对话框模板的模块句柄。如果该参数为NULL，则使用当前可执行文件。
+- **lpTemplateName** -- 对话框模板。此参数是指向指定对话框模板名称的以空结尾的字符串的指针，或指定对话框模板的资源标识符的整数值。如果参数指定了一个资源标识符，其高阶字必须为零，其低阶字必须包含该标识符。
+- **hWndParent** -- 拥有对话框的窗口的句柄。
+- **lpDialogFunc** -- 指向对话框过程的指针。
+- **dwInitParam** -- 在WM_INITDIALOG消息的lParam参数中传递给对话框的值。
+
+#### 返回值
+
+如果函数成功，则返回值为用于终止对话框的EndDialog函数调用中指定的nResult参数的值。
+
