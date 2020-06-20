@@ -762,3 +762,55 @@ INT_PTR DialogBoxParamA(
 
 如果函数成功，则返回值为用于终止对话框的EndDialog函数调用中指定的nResult参数的值。
 
+---
+
+### alarm()
+
+alarm也称为闹钟函数，它可以在进程中设置一个[定时器](https://baike.baidu.com/item/定时器)，当定时器指定的时间到时，它向进程发送SIGALRM信号。可以设置忽略或者不捕获此信号，如果采用默认方式其动作是终止调用该alarm函数的进程。
+
+#### 头文件
+
+#include <unistd.h>
+
+#### 原型
+
+```c
+unsigned int alarm(unsigned int seconds);
+```
+
+#### 函数说明
+
+`alarm()`用来设置信号`SIGALRM` 在经过参数`seconds` 指定的秒数后传送给目前的进程. 如果参数`seconds` 为`0`, 则之前设置的闹钟会被取消, 并将剩下的时间返回.
+
+#### 返回值
+
+成功：如果调用此`alarm（）`前，进程已经设置了闹钟时间，则返回上一个闹钟时间的剩余时间，否则返回0。
+
+出错：-1
+
+#### 事例
+
+```c
+#include <stdio.h>
+#include <unistd.h>
+#include <signal.h>
+void handler()
+{
+    printf("hello\n");
+}
+// 会在第5秒时打印hello
+main()
+{
+    int i;
+    signal(SIGALRM, handler);
+    alarm(5);
+    for(i = 1; i < 7; i++)
+    {
+        printf("sleep %d ...\n", i);
+        sleep(1);
+    }
+}
+```
+
+
+
