@@ -11,6 +11,7 @@
 * [Web notes](web-bi-ji/web_notes.md)
 
 ## exploit-execise
-* [Protostack](exploit-execise/protostar.md)
-  * [Stack](exploit-execise/stack.md)
+
+* [Protostack](exploit-execise/protostar/README.md)
+  * [Stack](exploit-execise/protostar/stack.md)
 
