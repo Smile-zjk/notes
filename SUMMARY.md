@@ -2,10 +2,6 @@
 
 * [Introduction](README.md)
 
-## 前言
-
-* [Initial page](qian-yan/readme.md)
-
 ## C/C++ 常见的函数
 
 * [C/C++ Functions](cc++-chang-jian-de-han-shu/function.md)
@@ -14,7 +10,7 @@
 
 * [Web notes](web-bi-ji/web_notes.md)
 
-## stack
+## exploit-execise
 
-* [exploit-execise](stack/stack.md)
+* [Stack](exploit-execise/stack.md)
 
