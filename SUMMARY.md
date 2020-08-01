@@ -2,4 +2,4 @@
 
 * [Initial page](README.md)  
 
-* C/C++ Functions(study_notes/function.md)
+* [C/C++ Functions](study_notes/function.md)
