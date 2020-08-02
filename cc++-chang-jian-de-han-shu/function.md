@@ -687,7 +687,9 @@ alarm也称为闹钟函数，它可以在进程中设置一个[定时器](https:
 
 #### 头文件
 
-## include
+```
+#include <unistd.h>
+```
 
 #### 原型
 
