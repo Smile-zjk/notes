@@ -1,3 +1,7 @@
+---
+description: 做re和pwn的时候遇到的函数
+---
+
 # C/C++ Functions
 
 ### write
