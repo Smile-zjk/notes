@@ -753,3 +753,23 @@ char *getenv(const char *name)
 
 该函数返回一个以 null 结尾的字符串，该字符串为被请求环境变量的值。如果该环境变量不存在，则返回 NULL
 
+
+
+### __builtin_return_address 
+
+此函数返回当前函数或其调用者之一的返回地址。level参数是要向上扫描调用堆栈的帧数。值为0产生当前函数的返回地址，值为1产生当前函数的调用者的返回地址，依此类推。
+
+#### 原型
+
+```c
+void *__builtin_return_address (unsigned int level)
+```
+
+#### 参数
+
+level参数必须是一个常量整数
+
+
+
+
+
