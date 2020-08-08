@@ -767,3 +767,24 @@ void *__builtin_return_address (unsigned int level)
 
 level参数必须是一个常量整数
 
+## strdup
+
+ 说明：返回指向被复制的字符串的指针，**所需空间由malloc()分配且可以由free()释放**。 
+
+### 原型
+
+```c
+extern char *strdup(char *s);
+```
+
+### 头文件
+
+```c
+#include <string.h>
+```
+
+### 功能
+
+复制字符串s
+
+ 
