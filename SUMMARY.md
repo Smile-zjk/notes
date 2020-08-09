@@ -6,10 +6,6 @@
 
 * [C/C++ Functions](cc++-chang-jian-de-han-shu/function.md)
 
-## WEB 笔记
-
-* [Web notes](web-bi-ji/web_notes.md)
-
 ## exploit-execise
 
 * [Protostack](exploit-execise/protostar/README.md)
