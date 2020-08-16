@@ -13,3 +13,6 @@
   * [Format](exploit-execise/protostar/format.md)
   * [Heap](exploit-execise/protostar/heap.md)
 
+## WP
+
+[ASIS-CTF-Finals-2017 - Mary_Morto](some_wp/Mary_Morto/wp.md)
