@@ -2,6 +2,10 @@
 
 * [Introduction](README.md)
 
+## WEB
+
+* [WEB notes](web-bi-ji/web_note1.md)
+
 ## C/C++ 常见的函数
 
 * [C/C++ Functions](cc++-chang-jian-de-han-shu/function.md)
