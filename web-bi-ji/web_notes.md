@@ -79,11 +79,11 @@ X-Forwarded-For: client1, proxy1, proxy2
 
 bugku flag在index里（[http://123.206.87.240:8005/post/index.php?file=php://filter/read=convert.base64-encode/resource=index.php）](http://123.206.87.240:8005/post/index.php?file=php://filter/read=convert.base64-encode/resource=index.php）)
 
-​ `php://filter` 是一种元封装器， 设计用于数据流打开时的[筛选过滤](https://www.php.net/manual/zh/filters.php)应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 [readfile\(\)](https://www.php.net/manual/zh/function.readfile.php)、 [file\(\)](https://www.php.net/manual/zh/function.file.php) 和 [file\_get\_contents\(\)](https://www.php.net/manual/zh/function.file-get-contents.php)， 在数据流内容读取之前没有机会应用其他过滤器。
+ `php://filter` 是一种元封装器， 设计用于数据流打开时的[筛选过滤](https://www.php.net/manual/zh/filters.php)应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 [readfile\(\)](https://www.php.net/manual/zh/function.readfile.php)、 [file\(\)](https://www.php.net/manual/zh/function.file.php) 和 [file\_get\_contents\(\)](https://www.php.net/manual/zh/function.file-get-contents.php)， 在数据流内容读取之前没有机会应用其他过滤器。
 
-​ `php://filter` 目标使用以下的参数作为它路径的一部分。 复合过滤链能够在一个路径上指定。详细使用这些参数可以参考具体范例。
+ `php://filter` 目标使用以下的参数作为它路径的一部分。 复合过滤链能够在一个路径上指定。详细使用这些参数可以参考具体范例。
 
-​
+
 
 | 名称 | 描述 |
 | :--- | :--- |
@@ -414,23 +414,23 @@ HTTP 文件上传变量,通过 HTTP POST 方式上传到当前脚本的项目的
 
 * [$\_FILES\['userfile'\]\['name'\]](https://www.php.net/manual/zh/reserved.variables.files.php)
 
-  ​ 客户端机器文件的原名称。
+   客户端机器文件的原名称。
 
 * [$\_FILES\['userfile'\]\['type'\]](https://www.php.net/manual/zh/reserved.variables.files.php)
 
-  ​ 文件的 MIME 类型，如果浏览器提供此信息的话。一个例子是“_image/gif_”。不过此 MIME 类型在 PHP 端并不检查，因此不要想当然认为有这个值。
+   文件的 MIME 类型，如果浏览器提供此信息的话。一个例子是“_image/gif_”。不过此 MIME 类型在 PHP 端并不检查，因此不要想当然认为有这个值。
 
 * [$\_FILES\['userfile'\]\['size'\]](https://www.php.net/manual/zh/reserved.variables.files.php)
 
-  ​ 已上传文件的大小，单位为字节。
+   已上传文件的大小，单位为字节。
 
 * [$\_FILES\['userfile'\]\['tmp\_name'\]](https://www.php.net/manual/zh/reserved.variables.files.php)
 
-  ​ 文件被上传后在服务端储存的临时文件名。
+   文件被上传后在服务端储存的临时文件名。
 
 * [$\_FILES\['userfile'\]\['error'\]](https://www.php.net/manual/zh/reserved.variables.files.php)
 
-  ​ 和该文件上传相关的[错误代码](https://www.php.net/manual/zh/features.file-upload.errors.php)。此项目是在 PHP 4.2.0 版本中增加的。
+   和该文件上传相关的[错误代码](https://www.php.net/manual/zh/features.file-upload.errors.php)。此项目是在 PHP 4.2.0 版本中增加的。
 
 ### move\_uploaded\_file
 
@@ -558,7 +558,7 @@ HTTP 文件上传变量,通过 HTTP POST 方式上传到当前脚本的项目的
 
 #### 参数
 
-​ `mode` 是单个字符，用于定义要返回什么信息：
+ `mode` 是单个字符，用于定义要返回什么信息：
 
 * _'a'_：此为默认。包含序列 _"s n r v m"_ 里的所有模式。                   
 * _'s'_：操作系统名称。例如：            _FreeBSD_。                   
