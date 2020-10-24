@@ -4,7 +4,7 @@
 
 ## WEB
 
-* [WEB notes](web-bi-ji/web_note1.md)
+* [WEB notes](web/web_note1.md)
 
 ## C/C++ 常见的函数
 
@@ -19,5 +19,5 @@
 
 ## WP
 
-* [ASIS-CTF-Finals-2017 - Mary_Morton](some_wp/Mary_Morton/wp.md)
+* [ASIS-CTF-Finals-2017 - Mary\_Morton](wp/wp.md)
 
