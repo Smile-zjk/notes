@@ -1,12 +1,6 @@
 # WEB notes
 
-<<<<<<< HEAD:web-bi-ji/web_note1.md
-### robots.txt
-=======
-\[TOC\]
-
 ## robots.txt
->>>>>>> af226f0a73db99de52b81d5b323019aaa19cefb4:web/web_note1.md
 
 **robots.txt**是一种存放于**网站根目录下**的ASCII编码的文本文件，它通常告诉网络搜索引擎的漫游器（又称**爬虫**），此网站中的哪些内容是**不应被搜索引擎的漫游器获取的**，哪些是**可以被漫游器获取**的。
 
@@ -218,11 +212,11 @@ python的几个魔术方法
 
 * `__class__`  python中的新式类（即显示继承object对象的类）都有一个属性 `__class__` 用于获取当前实例对应的类，例如 `"".__class__` 就可以获取到字符串实例对应的类
 * `__mro__`    python中类对象的 **mro** 属性会返回一个tuple对象，其中包含了当前类对象所有继承的基类，tuple中元素的顺序是MRO（Method Resolution Order） 寻找的顺序
-* `__base__`   返回该对象所继承的基类
+* `__base__` 返回该对象所继承的基类
 
   // **base**和**mro**都是用来寻找基类的
 
-* `__subclasses__`   python的新式类都保留了它所有的子类的引用，`__subclasses__()` 这个方法返回了类的所有存活的子类的引用（是类对象引用，不是实例）。
+* `__subclasses__` python的新式类都保留了它所有的子类的引用，`__subclasses__()` 这个方法返回了类的所有存活的子类的引用（是类对象引用，不是实例）。
 * `__init__`  类的初始化方法
 * `__globals__`  保存了函数所有的所有全局变量，在利用中，可以使用 `__init__` 获取对象的函数，并通过 `__globals__` 获取 file、os 等模块以进行下一步的利用
 
@@ -447,7 +441,6 @@ php探针是用来探测空间、服务器运行状况和PHP信息用的，探�
 
 一个比较常见的探针是**雅黑PHP探针**，默认地址是**tz.php**。
 
-<<<<<<< HEAD:web-bi-ji/web_note1.md
 ### php短标签
 
 在php的配置文件php.ini中有一个`short_open_tag`的值，开启以后可以使用PHP的短标签：`<? ?>`。同时，只有开启这个才可以使用 `<?=` 以代替 `<? echo`。不过**在php7中这个标签被移除了**。
@@ -542,8 +535,6 @@ $ cat$IFS$9flag  （使$IFS被当成一个整体，cat$IFSflag会把$IFSflag当�
 flag{123}
 ```
 
- 
-
 `<>file`：以读写模式打开文件（默认情况下在文件描述符0（stdin）上，如`<`），不会被截断，如果file不存在，则会创建文件。
 
 ```bash
@@ -554,5 +545,5 @@ $ cat<>flag #需要写权限
 flag{123}
 ```
 
-=======
->>>>>>> af226f0a73db99de52b81d5b323019aaa19cefb4:web/web_note1.md
+
+
