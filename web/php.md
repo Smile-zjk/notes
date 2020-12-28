@@ -644,23 +644,6 @@ preg_replace ( mixed $pattern , mixed $replacement , mixed $subject [, int $limi
 
 搜索**subject**中匹配**pattern**的部分， 以**replacement**进行替换。
 
-## PHP常量
-
-如需设置常量，请使用`define()`函数 - 它使用三个参数：
-
-1. 首个参数定义常量的名称
-2. 第二个参数定义常量的值
-3. 可选的第三个参数规定常量名是否对大小写不敏感。默认是fasle，false表示大小写敏感。
-
-下例创建了一个_对大小写敏感的常量_，值为 "Welcome to W3School.com.cn!"：
-
-```php
-<?php
-define("GREETING", "Welcome to W3School.com.cn!");
-echo GREETING;
-?>
-```
-
 ### include
 
 * 服务器端包含 \(SSI\) 用于创建可在多个页面重复使用的函数、页眉、页脚或元素。
@@ -705,7 +688,7 @@ HTTP 文件上传变量,通过 HTTP POST 方式上传到当前脚本的项目的
 
 本函数检查并确保由 `filename`指定的文件是合法的上传文件（即通过 PHP 的 HTTP POST上传机制所上传的）。如果文件合法，则将其移动为由`destination` 指定的文件。
 
-### 操作文件
+### 操作文件的函数
 
 * readfile\(\)函数 读取文件，并把它写入输出缓冲
 * fopen\(\)函数 打开文件
@@ -748,3 +731,19 @@ HTTP 文件上传变量,通过 HTTP POST 方式上传到当前脚本的项目的
   * $\_FILES\["file"\]\["error"\] - 由文件上传导致的错误代码
 
 这是一种非常简单文件上传方式。基于安全方面的考虑，您应当增加有关什么用户有权上传文件的限制。
+## PHP常量
+
+如需设置常量，请使用`define()`函数 - 它使用三个参数：
+
+1. 首个参数定义常量的名称
+2. 第二个参数定义常量的值
+3. 可选的第三个参数规定常量名是否对大小写不敏感。默认是fasle，false表示大小写敏感。
+
+下例创建了一个_对大小写敏感的常量_，值为 "Welcome to W3School.com.cn!"：
+
+```php
+<?php
+define("GREETING", "Welcome to W3School.com.cn!");
+echo GREETING;
+?>
+```
