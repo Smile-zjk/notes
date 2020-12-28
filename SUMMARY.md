@@ -5,6 +5,7 @@
 ## WEB
 
 * [WEB notes](web/web_note1.md)
+* [PHP](web/php.md)
 
 ## C/C++ 常见的函数
 

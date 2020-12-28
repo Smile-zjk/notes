@@ -32,60 +32,6 @@
 
 显示指定资源的源代码，在右键无法用的时候可以在url的最前面输入`view-source:`来查看网页源代码。
 
-## php弱类型
-
-`===`会先比较两个变量的类型是否相同，在比较数值
-
-`==`在比较的时候，会将两个变量转换为相同的类型，再比较
-
-```text
-如果比较一个数字和字符串或者比较涉及到数字内容的字符串，则字符串会被转换成数值并且比较按照数值来进行
-```
-
-hash比较缺陷
-
-```php
-"0e132456789"=="0e7124511451155" //true
-"0e123456abc"=="0e1dddada"  //false
-"0e1abc"=="0"     //true
-```
-
-**在进行比较运算时，如果遇到了0e\d+这种字符串，就会将这种字符串解析为科学计数法。如果不满足0e\d+这种模式，就会当作字符串进行比较，所以不会相等。**
-
-十六进制转换
-
-```php
-"0x1e240"=="123456"     //true
-"0x1e240"==123456       //true
-"0x1e240"=="1e240"      //false
-```
-
-当其中的一个字符串是0x开头的时候，PHP会将此字符串解析成为十进制然后再进行比较。
-
-类型转换
-
-```php
-<?php
-$test=1 + "10.5"; // $test=11.5(float)
-$test=1+"-1.3e3"; //$test=-1299(float)
-$test=1+"bob-1.3e3";//$test=1(int)
-$test=1+"2admin";//$test=3(int)
-$test=1+"admin2";//$test=1(int)
-?>
-```
-
-PHP手册：**当一个字符串欸当作一个数值来取值，其结果和类型如下:如果该字符串没有包含`'.','e','E'`并且其数值值在整形的范围之内该字符串被当作int来取值，其他所有情况下都被作为float来取值，该字符串的开始部分决定了它的值，如果该字符串以合法的数值开始，则使用该数值，否则其值为0。**
-
-md5\(\)
-
-```php
-$array1[] = array("foo" => "bar", "bar" => "foo",);
-$array2 = array("foo", "bar", "hello", "world");
-
-var_dump(md5($array1)==var_dump($array2));  //true
-```
-
-PHP手册中的md5\(\)函数的描述是`string md5 ( string $str [, bool $raw_output = false ] )`，md5\(\)中的需要是一个string类型的参数。但是当你传递一个array时，md5\(\)不会报错，只是会无法正确地求出array的md5值，并且返回`NULL`。这样就会导致任意2个array的md5值都会相等。
 
 ## Referer请求头
 
@@ -117,69 +63,6 @@ Remote Address 无法伪造，因为建立 TCP 连接需要三次握手，如果
 ## Referer
 
 `Referer` 请求头包含了当前请求页面的来源页面的地址，即表示当前页面是通过此来源页面里的链接进入的。服务端一般使用 `Referer` 请求头识别访问来源，可能会以此进行统计分析、日志记录以及缓存优化等
-
-## 序列化
-
-所有php里面的值都可以使用函数`serialize()`来返回一个包含**字节流的字符串来表示**。
-
-`unserialize()`函数能够**重新把字符串变回php原来的值**。
-
-序列化一个对象将会**保存对象的所有变量**，但是**不会保存对象的方法**，只会保存类的名字。
-
-为了能够`unserialize()`一个对象，**这个对象的类必须已经定义过**。如果序列化类A的一个对象，将会返回一个跟类A相关，而且包含了对象所有变量值的字符串。 如果要想在另外一个文件中解序列化一个对象，这个对象的类必须在解序列化之前定义，可以通过包含一个定义该类的文件或使用函数`spl_autoload_register()`来实现。
-
-**\_\_sleep\(\)**
-
-serialize\(\) 函数会检查类中是否存在一个魔术方法 \_\_sleep\(\)。如果存在，该方法会先被调用，然后才执行序列化操作。此功能可以用于清理对象，并返回一个包含对象中所有应被序列化的变量名称的数组。如果该方法未返回任何内容，则 NULL 被序列化，并产生一个 E\_NOTICE 级别的错误。
-
-对象被序列化之前触发，返回需要被序列化存储的成员属性，删除不必要的属性。
-
-**\_\_wakeup\(\)**
-
-unserialize\(\) 会检查是否存在一个 \_\_wakeup\(\) 方法。如果存在，则会先调用 \_\_wakeup 方法，预先准备对象需要的资源。
-
-预先准备对象资源，返回void，常用于反序列化操作中重新建立数据库连接或执行其他初始化操作。
-
-```php
-a - array
-b - boolean
-d - double
-i - integer
-o - common object
-r - reference
-s - string
-C - custom object
-O - class
-N - null
-R - pointer reference
-U - unicode string
-```
-
-* CVE-2016-7124漏洞，当序列化字符串中**表示对象属性个数的值**大于**真实的属性个数时**会跳过\_\_wakeup的执行
-
-```php
-<?php
-    class Student{
-        private $name = "casuall";
-        private $age = 18;
-        public function __wakeup(){
-            echo "wakeup is called";
-            echo "<br/>";
-        }
-    }
-
-    $a = new Student;
-    $ser = serialize($a);
-    echo $ser . "<br/>";
-
-    $unser = unserialize($ser);
-
-    // output:
-    // O:7:"Student":2:{s:13:"Studentname";s:7:"casuall";s:12:"Studentage";i:18;}
-  // wakeup is called
-  // 其中:2:中的2表示对象属性个数，其余的遵循 “类型：长度：值” 的格式
-?>
-```
 
 ## 模版注入\(SSTI\)
 
@@ -309,76 +192,6 @@ http://220.249.52.133:52133/{{''.__class__.__mro__[2].__subclasses__()[40]('./fl
 # URL http://220.249.52.133:52133/ctf{f22b6844-5169-4054-b2a0-d95b9361cb57} not found
 ```
 
-## php伪协议
-
-php:// — 访问各个输入/输出流（I/O streams）
-
-* **php://input** 是个可以访问请求的原始数据的只读流.CTF中经常使用`file_get_contents`获取`php://input`内容\(POST\)，需要开启`allow_url_include`，并且当`enctype="multipart/form-data"`的时候 **php://input是无效**的。
-  * **利用方式：**`?file=php://input` 数据利用`POST`传过去
-  * 碰到**file\_get\_contents\(\)**就要想到用**php://input**绕过，因为php伪协议也是可以利用http协议的，即可以使用POST方式传数据。
-
-    ```php
-    ?user=php://input&file=php://filter/convert.base64-encode/resource=class.php
-    ?user=php://input&file=php://filter/convert.base64-encode/resource=index.php
-    ?user=php://input&file=class.php&pass=O:4:%22Read%22:1:{s:4:%22file%22;s:8:%22f1a9.php%22;}
-    ```
-* **php://output** 是一个只写的数据流， 允许你以print和 echo 一样的方式 写入到输出缓冲区。
-* **php://filter** 是一种元封装器， 设计用于数据流打开时的筛选过滤应用。 这对于一体式（all-in-one）的文件函数非常有用，类似 readfile\(\)、 file\(\) 和 file\_get\_contents\(\)， 在数据流内容读取之前没有机会应用其他过滤器
-
-  **php://filter 参数**
-
-  ```text
-  resource=<要过滤的数据流>  这个参数是必须的。它指定了你要筛选过滤的数据流。
-  read=<读链的筛选列表> 该参数可选。可以设定一个或多个过滤器名称，以管道符（`|`）分隔
-  write=<写链的筛选列表>    该参数可选。可以设定一个或多个过滤器名称，以管道符（`|`）分隔。
-  <；两个链的筛选列表> 任何没有以 `read=` 或 `write=` 作前缀 的筛选器列表会视情况应用于读或写链。
-  ```
-
-```text
-  # 字符串过滤器
-  string.rot13
-  进行rot13转换
-
-  string.toupper
-  将字符全部大写
-
-  string.tolower
-  将字符全部小写
-
-  string.strip_tags
-  去除空字符、HTML 和 PHP 标记后的结果。
-  功能类似于strip_tags()函数，若不想某些字符不被消除，后面跟上字符，可利用字符串或是数组两种方式。
-
-  # 转换过滤器
-
-  convert.base64-encode和 convert.base64-decode使用这两个过滤器等同于分别用 base64_encode()和 base64_decode()函数处理所有的流数据。 convert.base64-encode支持以一个关联数组给出的参数。如果给出了 line-length，base64 输出将被用 line-length个字符为 长度而截成块。如果给出了 line-break-chars，每块将被用给出的字符隔开。这些参数的效果和用 base64_encode()再加上 chunk_split()相同
-
-  convert.quoted-printable-encode和 convert.quoted-printable-decode使用此过滤器的 decode 版本等同于用 quoted_printable_decode()函数处理所有的流数据。没有和 convert.quoted-printable-encode相对应的函数。 convert.quoted-printable-encode支持以一个关联数组给出的参数。除了支持和 convert.base64-encode一样的附加参数外， convert.quoted-printable-encode还支持布尔参数 binary和 force-encode-first。 convert.base64-decode只支持 line-break-chars参数作为从编码载荷中剥离的类型提示。
-```
-
-以下命令常用来读取文件
-
-```php
-  ?file=php://filter/read=convert.base64-encode/resource=index.php
-```
-
-* **data://**
-
-  php5.2.0起，数据流封装器开始有效，主要用于数据流的读取。如果传入的数据是PHP代码，就会执行代码
-
-  用法：
-
-  `data://text/plain;base64,`
-
-  `<?php system("dir")?>` base64编码后使用
-
-  `http://localhost/?page=data://text/plain/;base64,PD9waHAgc3lzdGVtKCJkaXIisssKT8%2b`\(注意编码后的+号要URL编码\)
-
-## php中大小写敏感规则
-
-* 区分大小写的：变量名、常量名、数组索引
-* 不区分大小写的：函数名、方法名、类名、魔术常量、NULL、TRUE、FALSE、强制类型转换
-
 ## SQL注入
 
 手工注入步骤：
@@ -452,17 +265,7 @@ DROP sampletable;#
 
 默认情况下，**备份文件**的名称是在原始文件名最后加上“~”后缀。例如，正在编辑一个名为“data.txt”的文件，那么Vim将产生名为“data.txt~”的备份文件。
 
-## php探针
-
-php探针是用来探测空间、服务器运行状况和PHP信息用的，探针可以实时查看服务器硬盘资源、内存占用、网卡流量、系统负载、服务器时间等信息。
-
-一个比较常见的探针是**雅黑PHP探针**，默认地址是**tz.php**。
-
-### php短标签
-
-在php的配置文件php.ini中有一个`short_open_tag`的值，开启以后可以使用PHP的短标签：`<? ?>`。同时，只有开启这个才可以使用 `<?=` 以代替 `<? echo`。不过**在php7中这个标签被移除了**。
-
-### 命令执行绕过
+## 命令执行绕过
 
 **通配符**
 
