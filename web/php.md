@@ -317,6 +317,8 @@ str_replace("\r","",$c);
 
 注释：该函数区分大小写。请使用 `str_ireplace()` 函数执行不区分大小写的搜索。
 
+**tips**：遇到`str_replace`记得考虑**双写绕过**。
+
 ### strrev\(\)
 
 反转字符串
